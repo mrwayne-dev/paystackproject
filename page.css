@@ -279,6 +279,7 @@ html, body {
 .customer-meta { display: flex; flex-direction: column; gap: 2px; }
 .customer-name { font-size: 14px; color: var(--text-muted); }
 .customer-email { font-size: 14px; color: var(--text-strong); font-weight: 500; }
+.customer-code { font-size: 12.5px; color: var(--text-muted); font-family: 'SF Mono', 'Courier New', monospace; margin-top: 2px; }
 .blacklist-row {
   border: 1px solid var(--border);
   border-top: none;
