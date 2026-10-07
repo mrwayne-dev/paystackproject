@@ -349,7 +349,7 @@ html, body {
   border: 2px solid #fff;
 }
 .timeline li.success::before { background: var(--green); }
-.tl-time { font-size: 13px; color: var(--text-muted); min-width: 44px; font-variant-numeric: tabular-nums; }
+.tl-time { font-size: 13px; color: var(--text-muted); min-width: 62px; font-variant-numeric: tabular-nums; }
 .tl-text { font-size: 13.5px; color: var(--text); }
 
 .empty-panel { padding: 40px 10px; text-align: center; }

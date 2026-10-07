@@ -16,29 +16,31 @@ const REFUNDS = [
     reference: "blg_k3mpibydvyfrhclzpypq", // real reference
     amount: REFUND_AMOUNT,
     status: "Processed",
-    date: "Sep 17, 2026, 10:06 PM",
+    date: "Oct 7, 2026, 6:15 AM",
     channel: "Bank",
     fees: 876.65,
-    refundedAt: "Sep 17, 2026, 10:06 PM UTC",
+    refundedAt: "Oct 7, 2026, 6:15 AM UTC",
     message: "Approved",
     requestedAmount: REFUND_AMOUNT,
     cardType: "IBANK_OPAY",
     authorization: "AUTH_kth033chjj",
     bankCountry: "OPay Digital Services Limited (OPay) (NG)",
     ip: "197.211.57.27",
-    duration: "09:34",
+    // Processing ran from midnight (12:00 AM) to 6:15 AM -> 6h 15m.
+    duration: "06:15",
+    durationUnit: "hours",
     device: "Phone",
     attempts: "0 attempts",
     errors: "0 errors",
     refundNote: "This transaction was refunded in full to the original payment method.",
     timeline: [
-      { time: "00:09", text: "Set payment method to: bank_transfer", success: false },
-      { time: "00:37", text: "Set payment method to: null", success: false },
-      { time: "05:48", text: "Set payment method to: null", success: false },
-      { time: "05:50", text: "Set payment method to: opay", success: false },
-      { time: "06:08", text: "Third-party authentication window opened", success: false },
-      { time: "09:25", text: "Successfully paid with ibank", success: true },
-      { time: "09:34", text: "Third-party authentication window closed", success: false },
+      { time: "12:00 AM", text: "Refund request created", success: false },
+      { time: "12:37 AM", text: "Set payment method to: bank_transfer", success: false },
+      { time: "02:15 AM", text: "Set payment method to: null", success: false },
+      { time: "03:48 AM", text: "Set payment method to: opay", success: false },
+      { time: "05:06 AM", text: "Third-party authentication window opened", success: false },
+      { time: "06:02 AM", text: "Successfully refunded with ibank", success: true },
+      { time: "06:15 AM", text: "Refund completed", success: false },
     ],
   },
   {
@@ -306,6 +308,7 @@ function showDetail(id) {
   $("#d-bank").textContent = r.bankCountry;
   $("#d-ip").textContent = r.ip;
   $("#d-duration").textContent = r.duration;
+  $("#d-duration-unit").textContent = r.durationUnit || "minutes";
   $("#d-device").textContent = r.device;
   $("#d-attempts").textContent = r.attempts;
   $("#d-errors").textContent = r.errors;
