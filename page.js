@@ -11,20 +11,22 @@ const REFUNDS = [
   {
     id: 1,
     customer: "aleruchi0987@gmail.com",
-    customerName: "Mgbah Michael",
+    customerName: "Peace Uchechi Anyahuru",
     customerCode: "CUS_v837tw4yq4m2kbb",
-    reference: "blg_k3mpibydvyfrhclzpypq", // real reference
+    reference: "260903010100625295793185", // real reference
     amount: 120000.0,
     status: "Processed",
-    date: "Oct 11, 2026, 2:52 PM",
+    date: "Dec 5, 2026, 2:52 PM",
     channel: "Bank",
     fees: 876.65,
-    refundedAt: "Oct 11, 2026, 2:52 PM UTC",
-    message: "Approved",
+    refundedAt: "Dec 5, 2026, 2:52 PM UTC",
+    message: "Personal Transfer",
     requestedAmount: 120000.0,
     cardType: "IBANK_OPAY",
     authorization: "AUTH_kth033chjj",
     bankCountry: "OPay Digital Services Limited (OPay) (NG)",
+    senderBank: "OPAY",
+    senderAccountNumber: "8131282268",
     ip: "197.211.57.27",
     // Processing ran from 2:44 PM to 2:52 PM -> 8m.
     duration: "08:00",
@@ -388,6 +390,10 @@ function maskAuth(auth) {
   return "•••• " + tail;
 }
 
+function maskAccountNumber(num) {
+  return num.slice(0, 3) + "****" + num.slice(-3);
+}
+
 function openReceipt() {
   const r = currentRecord;
   if (!r) return;
@@ -405,7 +411,9 @@ function openReceipt() {
     ? r.recipientBank + " | " + r.recipientAccountNumber
     : "Paystack Settlement Account";
   $("#r-sender-name").textContent = r.customerName;
-  $("#r-sender-sub").textContent = r.cardType + " " + maskAuth(r.authorization);
+  $("#r-sender-sub").textContent = r.senderBank
+    ? r.senderBank + " | " + maskAccountNumber(r.senderAccountNumber)
+    : r.cardType + " " + maskAuth(r.authorization);
 
   $("#r-remark").textContent = r.message;
   $("#r-reference").textContent = r.reference;
