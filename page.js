@@ -221,6 +221,40 @@ const REFUNDS = [
       { time: "00:58", text: "Awaiting settlement", success: false },
     ],
   },
+  {
+    id: 8,
+    customer: "davidokafor@gmail.com",
+    customerName: "David Okafor",
+    customerCode: "CUS_3kq56mn78op90",
+    reference: "sub_vt82mkqlwzxpr5bncd1",
+    amount: 350000.0,
+    status: "Processed",
+    date: "Oct 12, 2026, 10:15 AM",
+    channel: "Bank",
+    fees: 1750.0,
+    refundedAt: "Oct 12, 2026, 10:15 AM UTC",
+    message: "Approved",
+    requestedAmount: 350000.0,
+    cardType: "IBANK_WEMA",
+    authorization: "AUTH_wma721fklq9",
+    bankCountry: "Wema Bank (NG)",
+    recipientBank: "Wema Bank",
+    recipientAccountNumber: "300450192",
+    ip: "105.113.40.88",
+    duration: "03:40",
+    device: "Phone",
+    attempts: "0 attempts",
+    errors: "0 errors",
+    refundNote: "This transaction was paid in full as a subscription payment to Wayne Enterprises' Wema Bank account.",
+    timeline: [
+      { time: "10:11 AM", text: "Subscription payment request created", success: false },
+      { time: "10:12 AM", text: "Set payment method to: bank_transfer", success: false },
+      { time: "10:13 AM", text: "Set payment method to: wema", success: false },
+      { time: "10:14 AM", text: "Third-party authentication window opened", success: false },
+      { time: "10:15 AM", text: "Subscription payment successful with wema", success: true },
+      { time: "10:15 AM", text: "Subscription payment completed", success: false },
+    ],
+  },
 ];
 
 /* ---------------------- Helpers ---------------------- */
@@ -367,7 +401,9 @@ function openReceipt() {
   pill.className = "status-badge receipt-status-pill " + statusClass(r.status);
   $("#r-date").textContent = r.date;
 
-  $("#r-recipient-sub").textContent = r.bankCountry;
+  $("#r-recipient-sub").textContent = r.recipientBank
+    ? r.recipientBank + " | " + r.recipientAccountNumber
+    : "Paystack Settlement Account";
   $("#r-sender-name").textContent = r.customerName;
   $("#r-sender-sub").textContent = r.cardType + " " + maskAuth(r.authorization);
 
