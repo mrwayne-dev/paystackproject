@@ -271,9 +271,12 @@ function renderTable() {
 }
 
 /* ---------------------- Detail view ---------------------- */
+let currentRecord = null;
+
 function showDetail(id) {
   const r = REFUNDS.find((x) => x.id === id);
   if (!r) return;
+  currentRecord = r;
 
   // Breadcrumb
   $("#breadcrumb").innerHTML = `
@@ -338,6 +341,47 @@ function showList() {
   window.scrollTo(0, 0);
 }
 
+/* ---------------------- Receipt ---------------------- */
+const RECEIPT_STATUS_TEXT = {
+  Processed: "Successful",
+  Pending: "Pending",
+  Processing: "Processing",
+  Failed: "Failed",
+};
+
+function maskAuth(auth) {
+  const tail = auth.replace(/^AUTH_/, "").slice(-4).toUpperCase();
+  return "•••• " + tail;
+}
+
+function openReceipt() {
+  const r = currentRecord;
+  if (!r) return;
+
+  const card = $("#receipt-card");
+  card.dataset.status = r.status.toLowerCase();
+
+  $("#r-amount").textContent = fmtNGN(r.amount);
+  const pill = $("#r-status");
+  pill.textContent = RECEIPT_STATUS_TEXT[r.status] || r.status;
+  pill.className = "status-badge receipt-status-pill " + statusClass(r.status);
+  $("#r-date").textContent = r.date;
+
+  $("#r-recipient-sub").textContent = r.bankCountry;
+  $("#r-sender-name").textContent = r.customerName;
+  $("#r-sender-sub").textContent = r.cardType + " " + maskAuth(r.authorization);
+
+  $("#r-remark").textContent = r.message;
+  $("#r-reference").textContent = r.reference;
+  $("#r-auth").textContent = r.authorization;
+
+  $("#receipt-overlay").classList.remove("hidden");
+}
+
+function closeReceipt() {
+  $("#receipt-overlay").classList.add("hidden");
+}
+
 /* ---------------------- Tabs ---------------------- */
 function switchTab(name) {
   document.querySelectorAll(".tab").forEach((t) =>
@@ -377,4 +421,14 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   $("#export-btn").addEventListener("click", () => showToast("Exporting CSV…"));
+
+  $("#view-receipt-btn").addEventListener("click", openReceipt);
+  $("#receipt-close").addEventListener("click", closeReceipt);
+  $("#receipt-overlay").addEventListener("click", (e) => {
+    if (e.target.id === "receipt-overlay") closeReceipt();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeReceipt();
+  });
+  $("#receipt-download").addEventListener("click", () => window.print());
 });
