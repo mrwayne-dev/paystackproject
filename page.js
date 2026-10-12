@@ -14,6 +14,7 @@ const REFUNDS = [
     customerName: "Peace Uchechi Anyahuru",
     customerCode: "CUS_v837tw4yq4m2kbb",
     reference: "260903010100625295793185", // real reference
+    transactionType: "Personal Transfer",
     amount: 6700.0,
     status: "Processed",
     date: "Oct 5, 2026, 8:49 PM",
@@ -408,6 +409,7 @@ function openReceipt() {
   pill.textContent = RECEIPT_STATUS_TEXT[r.status] || r.status;
   pill.className = "status-badge receipt-status-pill " + statusClass(r.status);
   $("#r-date").textContent = r.date;
+  $("#r-type").textContent = r.transactionType || "Subscription payment";
 
   $("#r-recipient-name").textContent = r.recipientName || "Wayne Enterprises";
   $("#r-recipient-sub").textContent =
