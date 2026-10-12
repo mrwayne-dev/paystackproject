@@ -65,6 +65,16 @@ html, body {
 .sidebar::-webkit-scrollbar { width: 6px; }
 .sidebar::-webkit-scrollbar-thumb { background: #1d3a57; border-radius: 3px; }
 
+.sidebar-brand { padding: 18px 18px 6px; }
+.brand-logo-badge {
+  display: inline-flex;
+  align-items: center;
+  background: #fff;
+  padding: 7px 12px;
+  border-radius: 7px;
+}
+.brand-logo { height: 16px; width: auto; display: block; }
+
 .account-switcher {
   display: flex;
   align-items: center;
@@ -430,8 +440,8 @@ html, body {
   justify-content: space-between;
   margin-bottom: 22px;
 }
-.receipt-logo { display: flex; align-items: center; gap: 8px; }
-.receipt-logo span { font-size: 15px; font-weight: 700; color: var(--text-strong); }
+.receipt-logo { display: flex; align-items: center; }
+.receipt-logo-img { height: 24px; width: auto; display: block; }
 .receipt-header-label { font-size: 12px; font-weight: 600; color: var(--text-label); }
 
 .receipt-amount { font-size: 32px; font-weight: 700; color: var(--success-text); margin-bottom: 10px; letter-spacing: -0.01em; }

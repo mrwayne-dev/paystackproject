@@ -14,19 +14,21 @@ const REFUNDS = [
     customerName: "Peace Uchechi Anyahuru",
     customerCode: "CUS_v837tw4yq4m2kbb",
     reference: "260903010100625295793185", // real reference
-    amount: 120000.0,
+    amount: 6700.0,
     status: "Processed",
     date: "Dec 5, 2026, 2:52 PM",
     channel: "Bank",
-    fees: 876.65,
+    fees: 10.0,
     refundedAt: "Dec 5, 2026, 2:52 PM UTC",
     message: "Personal Transfer",
-    requestedAmount: 120000.0,
+    requestedAmount: 6700.0,
     cardType: "IBANK_OPAY",
     authorization: "AUTH_kth033chjj",
     bankCountry: "OPay Digital Services Limited (OPay) (NG)",
-    senderBank: "OPAY",
-    senderAccountNumber: "8131282268",
+    recipientName: "Peace Uchechi Anyahuru",
+    recipientSub: "OPAY | 8131282268",
+    senderName: "Wayne Enterprises",
+    senderSub: "Paystack Settlement Account",
     ip: "197.211.57.27",
     // Processing ran from 2:44 PM to 2:52 PM -> 8m.
     duration: "08:00",
@@ -407,13 +409,16 @@ function openReceipt() {
   pill.className = "status-badge receipt-status-pill " + statusClass(r.status);
   $("#r-date").textContent = r.date;
 
-  $("#r-recipient-sub").textContent = r.recipientBank
-    ? r.recipientBank + " | " + r.recipientAccountNumber
-    : "Paystack Settlement Account";
-  $("#r-sender-name").textContent = r.customerName;
-  $("#r-sender-sub").textContent = r.senderBank
-    ? r.senderBank + " | " + maskAccountNumber(r.senderAccountNumber)
-    : r.cardType + " " + maskAuth(r.authorization);
+  $("#r-recipient-name").textContent = r.recipientName || "Wayne Enterprises";
+  $("#r-recipient-sub").textContent =
+    r.recipientSub ||
+    (r.recipientBank ? r.recipientBank + " | " + r.recipientAccountNumber : "Paystack Settlement Account");
+  $("#r-sender-name").textContent = r.senderName || r.customerName;
+  $("#r-sender-sub").textContent =
+    r.senderSub ||
+    (r.senderBank
+      ? r.senderBank + " | " + maskAccountNumber(r.senderAccountNumber)
+      : r.cardType + " " + maskAuth(r.authorization));
 
   $("#r-remark").textContent = r.message;
   $("#r-reference").textContent = r.reference;
