@@ -5,42 +5,41 @@
    the first customer's transaction reference.
    ============================================================ */
 
-const REFUND_AMOUNT = 50900.0;
+const REFUND_AMOUNT = 100000.0;
 
 const REFUNDS = [
   {
     id: 1,
-    customer: "scottdavid4110@gmail.com",
-    customerName: "Scott David",
+    customer: "aleruchi0987@gmail.com",
+    customerName: "Mgbah Michael",
     customerCode: "CUS_v837tw4yq4m2kbb",
     reference: "blg_k3mpibydvyfrhclzpypq", // real reference
-    amount: REFUND_AMOUNT,
+    amount: 120000.0,
     status: "Processed",
-    date: "Oct 7, 2026, 6:33 AM",
+    date: "Oct 11, 2026, 2:52 PM",
     channel: "Bank",
     fees: 876.65,
-    refundedAt: "Oct 7, 2026, 6:33 AM UTC",
+    refundedAt: "Oct 11, 2026, 2:52 PM UTC",
     message: "Approved",
-    requestedAmount: REFUND_AMOUNT,
+    requestedAmount: 120000.0,
     cardType: "IBANK_OPAY",
     authorization: "AUTH_kth033chjj",
     bankCountry: "OPay Digital Services Limited (OPay) (NG)",
     ip: "197.211.57.27",
-    // Processing ran from 11:58 PM to 6:33 AM -> 6h 35m.
-    duration: "06:35",
-    durationUnit: "hours",
+    // Processing ran from 2:44 PM to 2:52 PM -> 8m.
+    duration: "08:00",
     device: "Phone",
     attempts: "0 attempts",
     errors: "0 errors",
-    refundNote: "This transaction was refunded in full to the original payment method.",
+    refundNote: "This transaction was paid in full as a subscription payment.",
     timeline: [
-      { time: "11:58 PM", text: "Refund request created", success: false },
-      { time: "12:37 AM", text: "Set payment method to: bank_transfer", success: false },
-      { time: "02:15 AM", text: "Set payment method to: null", success: false },
-      { time: "03:48 AM", text: "Set payment method to: opay", success: false },
-      { time: "05:06 AM", text: "Third-party authentication window opened", success: false },
-      { time: "06:20 AM", text: "Successfully refunded with ibank", success: true },
-      { time: "06:33 AM", text: "Refund completed", success: false },
+      { time: "2:44 PM", text: "Subscription payment request created", success: false },
+      { time: "2:45 PM", text: "Set payment method to: bank_transfer", success: false },
+      { time: "2:47 PM", text: "Set payment method to: null", success: false },
+      { time: "2:48 PM", text: "Set payment method to: opay", success: false },
+      { time: "2:50 PM", text: "Third-party authentication window opened", success: false },
+      { time: "2:51 PM", text: "Subscription payment successful with ibank", success: true },
+      { time: "2:52 PM", text: "Subscription payment completed", success: false },
     ],
   },
   {
@@ -245,7 +244,7 @@ function renderSummary() {
 
   $("#sum-total").textContent = fmtNGN(total);
   $("#sum-activity").textContent =
-    REFUNDS.length + (REFUNDS.length === 1 ? " refund" : " refunds");
+    REFUNDS.length + (REFUNDS.length === 1 ? " payment" : " payments");
   $("#sum-pending").textContent = pending + " pending";
 }
 
@@ -278,7 +277,7 @@ function showDetail(id) {
 
   // Breadcrumb
   $("#breadcrumb").innerHTML = `
-    <span class="crumb-root" id="crumb-back">Refunds</span>
+    <span class="crumb-root" id="crumb-back">Subscription Payments</span>
     <span class="crumb-sep">›</span>
     <span class="crumb-current">${r.reference}</span>
   `;
@@ -333,7 +332,7 @@ function showDetail(id) {
 }
 
 function showList() {
-  $("#breadcrumb").innerHTML = `<span class="crumb-root">Refunds</span>`;
+  $("#breadcrumb").innerHTML = `<span class="crumb-root">Subscription Payments</span>`;
   $("#detail-view").classList.add("hidden");
   $("#list-view").classList.remove("hidden");
   window.scrollTo(0, 0);
