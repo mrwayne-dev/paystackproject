@@ -26,10 +26,10 @@ const REFUNDS = [
     cardType: "IBANK_OPAY",
     authorization: "AUTH_kth033chjj",
     bankCountry: "OPay Digital Services Limited (OPay) (NG)",
+    direction: "debit",
     recipientName: "Peace Uchechi Anyahuru",
-    recipientSub: "OPAY | 8131282268",
-    senderName: "Wayne Enterprises",
-    senderSub: "Paystack Settlement Account",
+    recipientLogo: "opay",
+    receiptSubtitle: "Peace Uchechi Anyahuru 8131282268",
     ip: "197.211.57.27",
     // Processing ran from 8:41 PM to 8:49 PM -> 8m.
     duration: "08:00",
@@ -243,8 +243,7 @@ const REFUNDS = [
     cardType: "IBANK_WEMA",
     authorization: "AUTH_wma721fklq9",
     bankCountry: "Wema Bank (NG)",
-    recipientBank: "Wema Bank",
-    recipientAccountNumber: "300450192",
+    receiptSubtitle: "Wayne Enterprises · Wema Bank 300450192",
     ip: "105.113.40.88",
     duration: "03:40",
     device: "Phone",
@@ -381,50 +380,115 @@ function showList() {
 }
 
 /* ---------------------- Receipt ---------------------- */
-const RECEIPT_STATUS_TEXT = {
-  Processed: "Successful",
-  Pending: "Pending",
-  Processing: "Processing",
-  Failed: "Failed",
+const PAYMENT_METHOD_LABEL = {
+  Bank: "Bank Transfer",
+  Card: "Card Payment",
 };
 
-function maskAuth(auth) {
-  const tail = auth.replace(/^AUTH_/, "").slice(-4).toUpperCase();
-  return "•••• " + tail;
+const CATEGORY_LABEL = {
+  "Personal Transfer": "Transfer",
+  "Subscription payment": "Subscription",
+};
+
+const TL_ICON = {
+  done: '<svg viewBox="0 0 24 24" width="12" height="12"><path d="M5 12l5 5L19 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  pending: '<svg viewBox="0 0 24 24" width="10" height="10"><circle cx="12" cy="12" r="5" fill="currentColor"/></svg>',
+  failed: '<svg viewBox="0 0 24 24" width="12" height="12"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>',
+};
+
+const fmtNaira = (n) =>
+  "₦" + n.toLocaleString("en-NG", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+function receiptStamp(r) {
+  const parts = r.date.split(", ");
+  const datePart = parts.slice(0, 2).join(", ");
+  const timePart = parts[2] || "";
+  return { datePart, timePart, stamp: datePart + " • " + timePart };
 }
 
-function maskAccountNumber(num) {
-  return num.slice(0, 3) + "****" + num.slice(-3);
+function buildTimelineSteps(r) {
+  const { stamp } = receiptStamp(r);
+  const steps = [{ label: "Initiated", time: stamp, text: "You made this transfer.", state: "done" }];
+
+  if (r.status === "Failed") {
+    steps.push({
+      label: "Failed",
+      time: stamp,
+      text: r.message || "The transaction could not be completed.",
+      state: "failed",
+    });
+    return steps;
+  }
+  if (r.status === "Pending") {
+    steps.push({ label: "Paid", time: null, text: "Awaiting confirmation from the recipient bank.", state: "pending" });
+    steps.push({ label: "Completed", time: null, text: "The transaction has been completed.", state: "pending" });
+    return steps;
+  }
+  if (r.status === "Processing") {
+    steps.push({ label: "Paid", time: stamp, text: "Your transaction is on its way.", state: "done" });
+    steps.push({ label: "Completed", time: null, text: "The transaction has been completed.", state: "pending" });
+    return steps;
+  }
+  steps.push({ label: "Paid", time: stamp, text: "Your transaction is on its way.", state: "done" });
+  steps.push({ label: "Completed", time: stamp, text: "The transaction has been completed.", state: "done" });
+  return steps;
+}
+
+function renderReceiptTimeline(r) {
+  const list = $("#r-timeline");
+  list.innerHTML = buildTimelineSteps(r)
+    .map(
+      (s) => `
+    <li class="${s.state}">
+      <div class="receipt-tl-rail">
+        <span class="receipt-tl-dot">${TL_ICON[s.state]}</span>
+        <span class="receipt-tl-line"></span>
+      </div>
+      <div class="receipt-tl-body">
+        <div class="receipt-tl-head">
+          <span class="receipt-tl-label">${s.label}</span>
+          ${s.time ? `<span class="receipt-tl-time">${s.time}</span>` : ""}
+        </div>
+        <div class="receipt-tl-text">${s.text}</div>
+      </div>
+    </li>`
+    )
+    .join("");
 }
 
 function openReceipt() {
   const r = currentRecord;
   if (!r) return;
 
-  const card = $("#receipt-card");
-  card.dataset.status = r.status.toLowerCase();
+  const type = r.transactionType || "Subscription payment";
+  const recipientName = r.recipientName || "Wayne Enterprises";
+  const isDebit = r.direction === "debit";
 
-  $("#r-amount").textContent = fmtNGN(r.amount);
-  const pill = $("#r-status");
-  pill.textContent = RECEIPT_STATUS_TEXT[r.status] || r.status;
-  pill.className = "status-badge receipt-status-pill " + statusClass(r.status);
-  $("#r-date").textContent = r.date;
-  $("#r-type").textContent = r.transactionType || "Subscription payment";
+  $("#r-amount").textContent = (isDebit ? "-" : "+") + fmtNaira(r.amount);
+  $("#r-subtitle").textContent = r.receiptSubtitle || recipientName + " " + r.reference;
 
-  $("#r-recipient-name").textContent = r.recipientName || "Wayne Enterprises";
-  $("#r-recipient-sub").textContent =
-    r.recipientSub ||
-    (r.recipientBank ? r.recipientBank + " | " + r.recipientAccountNumber : "Paystack Settlement Account");
-  $("#r-sender-name").textContent = r.senderName || r.customerName;
-  $("#r-sender-sub").textContent =
-    r.senderSub ||
-    (r.senderBank
-      ? r.senderBank + " | " + maskAccountNumber(r.senderAccountNumber)
-      : r.cardType + " " + maskAuth(r.authorization));
+  const { datePart, timePart } = receiptStamp(r);
+  $("#r-date").textContent = datePart;
+  $("#r-time").textContent = timePart;
+  $("#r-category").textContent = CATEGORY_LABEL[type] || type;
 
-  $("#r-remark").textContent = r.message;
+  renderReceiptTimeline(r);
+
+  $("#r-to-name").textContent = recipientName;
+  const avatar = $("#r-avatar");
+  if (r.recipientLogo === "opay") {
+    avatar.className = "receipt-avatar";
+    avatar.innerHTML = '<img src="assets/opay-logo.png" alt="OPay" />';
+  } else {
+    avatar.className = "receipt-avatar initial";
+    avatar.textContent = recipientName.charAt(0).toUpperCase();
+  }
+
+  $("#r-description").textContent = r.message;
+  $("#r-method").textContent = PAYMENT_METHOD_LABEL[r.channel] || r.channel;
+  $("#r-fees").textContent = fmtNaira(r.fees);
+  $("#r-vat").textContent = fmtNaira(0);
   $("#r-reference").textContent = r.reference;
-  $("#r-auth").textContent = r.authorization;
 
   $("#receipt-overlay").classList.remove("hidden");
 }
@@ -482,4 +546,15 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.key === "Escape") closeReceipt();
   });
   $("#receipt-download").addEventListener("click", () => window.print());
+
+  $("#receipt-copy-ref").addEventListener("click", () => {
+    const ref = $("#r-reference").textContent;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(ref).then(() => showToast("Reference copied"));
+    } else {
+      showToast("Reference copied");
+    }
+  });
+  $("#receipt-repeat-btn").addEventListener("click", () => showToast("Repeating transaction…"));
+  $("#receipt-report-btn").addEventListener("click", () => showToast("Issue reported to support"));
 });

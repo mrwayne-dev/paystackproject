@@ -338,67 +338,99 @@
   <!-- ===================== RECEIPT MODAL ===================== -->
   <div class="receipt-overlay hidden" id="receipt-overlay">
     <div class="receipt-modal">
-      <button class="receipt-close" id="receipt-close" aria-label="Close receipt">
-        <svg viewBox="0 0 24 24" width="18" height="18"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-      </button>
-
       <div class="receipt-card" id="receipt-card">
-        <div class="receipt-header">
-          <div class="receipt-logo">
-            <img src="assets/paystack-logo.png" alt="Paystack" class="receipt-logo-img" />
-          </div>
-          <span class="receipt-header-label">Transaction Receipt</span>
+        <div class="receipt-topbar no-print">
+          <h2 class="receipt-title">Transaction Details</h2>
+          <button class="receipt-close" id="receipt-close" aria-label="Close receipt">
+            <svg viewBox="0 0 24 24" width="16" height="16"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
         </div>
 
-        <div class="receipt-amount" id="r-amount">NGN 0.00</div>
-        <span class="status-badge receipt-status-pill" id="r-status">Successful</span>
-        <div class="receipt-date" id="r-date">—</div>
+        <div class="receipt-summary">
+          <div class="receipt-amount" id="r-amount">₦0.00</div>
+          <div class="receipt-subtitle" id="r-subtitle">—</div>
+          <div class="receipt-date">On <span id="r-date">—</span> at <strong id="r-time">—</strong></div>
 
-        <div class="receipt-divider"></div>
-
-        <div class="receipt-rows">
-          <div class="receipt-row">
-            <span class="receipt-label">Transaction Type</span>
-            <span class="receipt-value" id="r-type">Subscription payment</span>
-          </div>
-          <div class="receipt-row">
-            <span class="receipt-label">Recipient Details</span>
-            <span class="receipt-value multiline">
-              <strong id="r-recipient-name">Wayne Enterprises</strong>
-              <span id="r-recipient-sub">Paystack Settlement Account</span>
+          <div class="receipt-category-pill">
+            <span class="receipt-category-icon">
+              <svg viewBox="0 0 24 24" width="14" height="14"><path d="M7 7h13M7 7l4-4M7 7l4 4M17 17H4M17 17l-4-4M17 17l-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </span>
-          </div>
-          <div class="receipt-row">
-            <span class="receipt-label">Sender Details</span>
-            <span class="receipt-value multiline">
-              <strong id="r-sender-name">—</strong>
-              <span id="r-sender-sub">—</span>
-            </span>
-          </div>
-          <div class="receipt-row">
-            <span class="receipt-label">Remark</span>
-            <span class="receipt-value" id="r-remark">—</span>
-          </div>
-          <div class="receipt-row">
-            <span class="receipt-label">Transaction Reference</span>
-            <span class="receipt-value mono" id="r-reference">—</span>
-          </div>
-          <div class="receipt-row">
-            <span class="receipt-label">Authorization</span>
-            <span class="receipt-value mono" id="r-auth">—</span>
+            <span id="r-category">Transfer</span>
           </div>
         </div>
 
-        <div class="receipt-support">
-          <span class="receipt-support-label">Support</span>
-          <a class="receipt-support-email" href="mailto:support@paystack.com">support@paystack.com</a>
+        <div class="receipt-section receipt-timeline-card">
+          <ul class="receipt-timeline-list" id="r-timeline"><!-- steps injected by page.js --></ul>
         </div>
 
-        <div class="receipt-dashed"></div>
-        <p class="receipt-promo">Thank you for trusting Paystack with your payments. Have a question about this transaction? Our support team is happy to help.</p>
+        <div class="receipt-section receipt-info-card">
+          <div class="receipt-info-row receipt-to-row">
+            <div>
+              <span class="receipt-info-label">To</span>
+              <div class="receipt-info-value strong" id="r-to-name">—</div>
+            </div>
+            <span class="receipt-avatar" id="r-avatar"></span>
+          </div>
+
+          <div class="receipt-info-row">
+            <span class="receipt-info-label">Description</span>
+            <div class="receipt-info-value" id="r-description">—</div>
+          </div>
+
+          <div class="receipt-info-row">
+            <span class="receipt-info-label">Payment Method</span>
+            <div class="receipt-info-value" id="r-method">—</div>
+          </div>
+
+          <div class="receipt-info-row receipt-fees-row">
+            <div>
+              <span class="receipt-info-label">Transaction Fees</span>
+              <div class="receipt-info-value" id="r-fees">₦0.00</div>
+            </div>
+            <div>
+              <span class="receipt-info-label">VAT Fee</span>
+              <div class="receipt-info-value" id="r-vat">₦0.00</div>
+            </div>
+          </div>
+
+          <div class="receipt-info-row">
+            <span class="receipt-info-label">Transaction Reference</span>
+            <div class="receipt-ref-row">
+              <span class="receipt-info-value mono" id="r-reference">—</span>
+              <button class="receipt-copy-btn no-print" id="receipt-copy-ref" aria-label="Copy transaction reference">
+                <svg viewBox="0 0 24 24" width="15" height="15"><rect x="9" y="9" width="11" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M5 15V5a2 2 0 012-2h10" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="receipt-section no-print">
+          <h3 class="receipt-more-heading">More Actions</h3>
+          <div class="receipt-actions-card">
+            <button class="receipt-action-row" id="receipt-repeat-btn">
+              <span class="receipt-action-icon">
+                <svg viewBox="0 0 24 24" width="16" height="16"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+              <span class="receipt-action-text">
+                <span class="receipt-action-title">Repeat Transaction</span>
+                <span class="receipt-action-sub">Make this payment again</span>
+              </span>
+              <svg class="receipt-action-chevron" viewBox="0 0 24 24" width="16" height="16"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <button class="receipt-action-row danger" id="receipt-report-btn">
+              <span class="receipt-action-icon danger">
+                <svg viewBox="0 0 24 24" width="16" height="16"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </span>
+              <span class="receipt-action-text">
+                <span class="receipt-action-title danger">Report Issue</span>
+              </span>
+              <svg class="receipt-action-chevron" viewBox="0 0 24 24" width="16" height="16"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <button class="receipt-download no-print" id="receipt-download">Download Receipt</button>
       </div>
-
-      <button class="btn-green receipt-download" id="receipt-download">Download receipt</button>
     </div>
   </div>
 
